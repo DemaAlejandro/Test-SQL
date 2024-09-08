@@ -1,0 +1,104 @@
+CREATE TABLE proveedor (
+    codpro CHAR(3) NOT NULL,
+    nompro VARCHAR(30) NOT NULL,
+    status INT, 
+    ciudad VARCHAR(15),
+    PRIMARY KEY (codpro)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE pieza (
+    codpie CHAR(3) NOT NULL,
+    nompie VARCHAR(10) NOT NULL,
+    color VARCHAR(10),
+    peso DECIMAL(5,2) NOT NULL, 
+    ciudad VARCHAR(15),
+    PRIMARY KEY (codpie)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE proyecto (
+    codpj CHAR(3) NOT NULL,
+    nompj VARCHAR(20) NOT NULL,
+    ciudad VARCHAR(15),
+    PRIMARY KEY (codpj)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+CREATE TABLE suministros (
+    codpro CHAR(3) NOT NULL,
+    codpie CHAR(3) NOT NULL,
+    codpj CHAR(3) NOT NULL,
+    cantidad INT,
+    PRIMARY KEY (codpro, codpie, codpj),
+    FOREIGN KEY (codpro) REFERENCES proveedor(codpro),
+    FOREIGN KEY (codpie) REFERENCES pieza(codpie),
+    FOREIGN KEY (codpj) REFERENCES proyecto(codpj)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+INSERT INTO proveedor (codpro, nompro, status, ciudad) VALUES
+    ('S1', 'Santiago Martínez', 3, 'Granada'),
+    ('S2', 'Ana López', 4, 'Madrid'),
+    ('S3', 'Diego García', 2, 'Barcelona'),
+    ('S4', 'María Rodríguez', 5, 'Londres'),
+    ('S5', 'Pedro Martínez', 1, 'Paris'),
+    ('S6', 'Lucía Sánchez', 3, 'Roma'),
+    ('S7', 'Javier Pérez', 2, 'Berlin'),
+    ('S8', 'Elena Fernández', 4, 'Lisboa'),
+    ('S9', 'David Gómez', 5, 'Madrid'),
+    ('S10', 'Carmen Ruiz', 2, 'Granada'),
+    ('S11', 'José Morales', 3, 'Paris'),
+    ('S12', 'Isabel Martín', 1, 'Madrid'),
+    ('S13', 'Manuel González', 4, 'Barcelona'),
+    ('S14', 'Ana Díaz', 3, 'Granada'),
+    ('S15', 'Miguel Pérez', 2, 'Londres');
+
+INSERT INTO pieza (codpie, nompie, color, peso, ciudad) VALUES
+    ('P1', 'Tuerca', 'Gris', 2.5, 'Madrid'),
+    ('P2', 'Tornillo', 'Rojo', 1.25, 'Paris'),
+    ('P3', 'Arandela', 'Blanco', 3, 'Barcelona'),
+    ('P4', 'Clavo', 'Gris', 5.5, 'Londres'),
+    ('P5', 'Alcayata', 'Blanco', 10, 'Madrid'),
+    ('P6', 'Remache', 'Rojo', 0.5, 'Berlin'),
+    ('P7', 'Tubo', 'Gris', 7.5, 'Paris'),
+    ('P8', 'Perno', 'Negro', 6, 'Madrid'),
+    ('P9', 'Tornillo', 'Verde', 1, 'Roma'),
+    ('P10', 'Tuerca', 'Azul', 2.8, 'Granada'),
+    ('P11', 'Clavo', 'Negro', 4.5, 'Lisboa'),
+    ('P12', 'Remache', 'Blanco', 8, 'Madrid'),
+    ('P13', 'Tubo', 'Rojo', 9, 'Paris'),
+    ('P14', 'Perno', 'Gris', 10, 'Barcelona'), 
+    ('P15', 'Tornillo', 'Gris', 1.2, 'Madrid');
+
+INSERT INTO proyecto (codpj, nompj, ciudad) VALUES
+    ('J1', 'Proyecto 1', 'Londres'),
+    ('J2', 'Proyecto 2', 'Madrid'),
+    ('J3', 'Proyecto 3', 'Barcelona'),
+    ('J4', 'Proyecto 4', 'Paris'),
+    ('J5', 'Proyecto 5', 'Roma'),
+    ('J6', 'Proyecto 6', 'Lisboa'),
+    ('J7', 'Proyecto 7', 'Berlin'),
+    ('J8', 'Proyecto 8', 'Madrid'),
+    ('J9', 'Proyecto 9', 'Granada'),
+    ('J10', 'Proyecto 10', 'Londres'),
+    ('J11', 'Proyecto 11', 'Paris'),
+    ('J12', 'Proyecto 12', 'Barcelona'),
+    ('J13', 'Proyecto 13', 'Madrid'),
+    ('J14', 'Proyecto 14', 'Lisboa'),
+    ('J15', 'Proyecto 15', 'Londres');
+
+INSERT INTO suministros (codpro, codpie, codpj, cantidad) VALUES
+    ('S1', 'P1', 'J1', 100),
+    ('S1', 'P2', 'J2', 150),
+    ('S2', 'P1', 'J3', 200),
+    ('S2', 'P3', 'J4', 250),
+    ('S3', 'P4', 'J5', 300),
+    ('S3', 'P5', 'J6', 350),
+    ('S3', 'P4', 'J6', 350),
+    ('S4', 'P1', 'J7', 400),
+    ('S4', 'P2', 'J8', 450),
+    ('S5', 'P3', 'J9', 500),
+    ('S5', 'P4', 'J10', 550),
+    ('S6', 'P1', 'J11', 600),
+    ('S6', 'P2', 'J12', 650),
+    ('S7', 'P3', 'J13', 700),
+    ('S7', 'P4', 'J14', 750),
+    ('S8', 'P1', 'J15', 800),
+    ('S10', 'P3', 'J12', 720);
