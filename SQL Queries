@@ -1,0 +1,115 @@
+a.	Encontrar los proveedores que han vendido la pieza P1 a todos los proyectos de Londres
+SELECT su.codpro       
+FROM suministros su
+JOIN proyecto pj ON su.codpj = pj.codpj
+WHERE su.codpie = 'P1' AND pj.ciudad = 'Londres'
+GROUP BY su.codpro
+HAVING COUNT(DISTINCT su.codpj) = (SELECT COUNT(*)FROM proyecto WHERE ciudad = 'Londres')
+
+-- Si quisiésemos saber únicamente que proveedores han vendido P1 a algún proyecto de Londres
+SELECT su.codpro       
+FROM suministros su
+JOIN proyecto pj ON su.codpj = pj.codpj
+WHERE su.codpie = 'P1' AND pj.ciudad = 'Londres'
+
+b.	Encontrar los proveedores que han suministrado al menos, una pieza roja a todos y cada uno de los proyectos existentes en la base de datos
+SELECT su.codpro
+FROM suministros su
+JOIN pieza pi ON pi.codpie=su.codpie
+JOIN proyecto pj ON pj.codpj=su.codpj
+WHERE pi.color="Rojo"
+GROUP BY su.codpro
+HAVING COUNT(DISTINCT pj.codpj) = (SELECT COUNT(*)FROM proyecto)
+
+c.	Encontrar las piezas que han sido suministrados por un mismo proveedor a todos los proyectos
+SELECT codpie
+FROM suministros
+GROUP BY codpie
+HAVING COUNT(DISTINCT codpj) = (SELECT COUNT(*) FROM proyecto)
+
+d.	Encontrar los nombres de los proveedores de Granada que sólo venden la pieza ‘P3’
+SELECT DISTINCT p.nompro
+FROM proveedor p
+JOIN suministros su ON p.codpro = su.codpro
+JOIN pieza pi ON su.codpie = pi.codpie
+WHERE p.ciudad = 'Granada' AND su.codpie = 'P3'
+AND NOT EXISTS (
+    SELECT 1
+    FROM suministros su2
+    JOIN pieza pi2 ON su2.codpie = pi2.codpie
+    WHERE su2.codpro = p.codpro
+    AND pi2.codpie <> 'P3')
+
+e.	Encontrar el nombre y la ciudad de los proveedores que suministran sólo la pieza ‘P3’
+FROM proveedor p
+JOIN suministros su ON p.codpro = su.codpro
+WHERE su.codpie = 'P3'
+AND NOT EXISTS (
+    SELECT 1
+    FROM suministros su2
+    WHERE su2.codpro = p.codpro
+    AND su2.codpie <> 'P3')
+
+f.	Encontrar los nombres de los proyectos que sólo usan una pieza fabricada en París
+
+SELECT pj.nompj
+FROM proyecto pj
+JOIN suministros su ON pj.codpj=su.codpj
+JOIN pieza pi ON pi.codpie=su.codpie
+WHERE pi.ciudad="Paris"
+AND NOT EXISTS (
+    SELECT 1
+    FROM suministros su2
+  	JOIN  pieza pi2 ON pi2.codpie=su2.codpie
+    WHERE su2.codpj = pj.codpj
+    AND pi2.ciudad <> 'Paris')
+
+
+
+g.	Encontrar los nombres de las piezas que sólo son suministradas por un proveedor de ‘Londres’
+SELECT pi.nompie
+FROM pieza pi
+JOIN suministros su ON su.codpie=pi.codpie
+JOIN proveedor p ON p.codpro=su.codpro
+WHERE p.ciudad = "Londres"
+AND NOT EXISTS (
+  SELECT 1 
+  FROM suministros su2
+  JOIN proveedor p2 ON p2.codpro=su2.codpro
+  WHERE su2.codpie=pi.codpie
+  AND p2.ciudad <> "Londres")
+
+h.	Encontrar los nombres de los proveedores de Granada que sólo suministran al proyecto J1
+
+SELECT p.nompro
+FROM proveedor p
+JOIN suministros su ON su.codpro=p.codpro
+WHERE p.ciudad = "Granada" AND su.codpj= "J1"
+AND NOT EXISTS (
+  SELECT 1
+  FROM suministros su2
+  WHERE su2.codpro = p.codpro
+  AND su2.codpj <> "J1")
+
+i.	Encontrar el código de aquellos proveedores con status 3 que sólo suministran a proyectos de Londres
+SELECT p.codpro
+FROM proveedor p
+JOIN suministros su ON su.codpro=p.codpro
+JOIN proyecto pj ON su.codpj=pj.codpj
+WHERE p.status = 3 AND pj.ciudad="Londres"
+AND NOT EXISTS (
+  SELECT 1
+  FROM suministros su2
+  JOIN proyecto pj2 ON su2.codpj=pj2.codpj
+  WHERE su2.codpro=p.codpro
+  AND pj2.ciudad <> "Londres")
+
+j.	Encontrar el proyecto que utiliza más piezas pesadas (una pieza es pesada si su peso es mayor que 5).
+
+SELECT codpj, COUNT(*) AS cantidad_piezas_pesadas
+FROM suministros su
+JOIN pieza pi ON su.codpie = pi.codpie
+WHERE peso > 5
+GROUP BY codpj
+ORDER BY cantidad_piezas_pesadas DESC
+LIMIT 1
